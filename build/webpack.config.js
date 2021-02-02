@@ -37,6 +37,7 @@ module.exports = {
             },
             chunksSortMode: 'none',
             scripts: `<script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>`,
+            styles: '<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.10.0/theme-chalk/index.css">'
             // inject: 'body',
             // scriptLoading: 'blocking'
         }),
