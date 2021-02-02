@@ -30,6 +30,10 @@ module.exports = {
                         {loader: 'css-loader'}
                     ]
                 */
+            },
+            {
+                test: /\.less$/, // 解析less
+                use: ['style-loader', 'css-loader', 'less-loader'] // 从右向左解析
             }
         ]
     },
