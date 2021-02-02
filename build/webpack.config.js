@@ -18,7 +18,21 @@ module.exports = {
         filename: 'js/[name].js' // 输出文件名
     },
     // 处理对应模块
-    module: {},
+    module: {
+        rules: [
+            {
+                test: /\.css$/, // 解析css
+                use: ['style-loader', 'css-loader'] // 从右向左解析
+                /* 
+                    也可以这样写，这种方式方便写一些配置参数
+                    use: [
+                        {loader: 'style-loader'},
+                        {loader: 'css-loader'}
+                    ]
+                */
+            }
+        ]
+    },
     // 对应插件
     plugins: [
         // generate dist index.html with correct asset hash for caching.
@@ -36,8 +50,8 @@ module.exports = {
                     // https://github.com/kangax/html-minifier#options-quick-reference
             },
             chunksSortMode: 'none',
-            scripts: `<script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>`,
-            styles: '<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.10.0/theme-chalk/index.css">'
+            scripts: `<script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>`, // html 模板内通过设置<%= htmlWebpackPlugin.options.scripts %> 拿到的变量
+            styles: '<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.10.0/theme-chalk/index.css">' // html 模板内通过设置<%= htmlWebpackPlugin.options.styles %> 拿到的变量
             // inject: 'body',
             // scriptLoading: 'blocking'
         }),
