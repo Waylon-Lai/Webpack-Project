@@ -20,20 +20,48 @@ module.exports = {
     // 处理对应模块
     module: {
         rules: [
+            // {
+            //     test: /\.css$/, // 解析css
+            //     use: ['style-loader', 'css-loader'] // 从右向左解析
+            //     /* 
+            //         也可以这样写，这种方式方便写一些配置参数
+            //         use: [
+            //             {loader: 'style-loader'},
+            //             {loader: 'css-loader'}
+            //         ]
+            //     */
+            // },
+            // {
+            //     test: /\.less$/, // 解析less
+            //     use: ['style-loader', 'css-loader', 'less-loader'] // 从右向左解析
+            // }
             {
-                test: /\.css$/, // 解析css
-                use: ['style-loader', 'css-loader'] // 从右向左解析
-                /* 
-                    也可以这样写，这种方式方便写一些配置参数
-                    use: [
-                        {loader: 'style-loader'},
-                        {loader: 'css-loader'}
-                    ]
-                */
-            },
-            {
-                test: /\.less$/, // 解析less
-                use: ['style-loader', 'css-loader', 'less-loader'] // 从右向左解析
+                test: /\.(le|c)ss$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            // The option importLoaders allows you to configure how many loaders before css-loader should be applied to @imported resources.
+                            importLoaders: 2,
+                            // 0 => no loaders (default);
+                            // 1 => postcss-loader;
+                            // 2 => postcss-loader, less-loader
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',// 为解决浏览器兼容问题而使用兼容性前缀
+                        // options: {
+                        //     // 出现报错Invalid options object. PostCSS Loader has been initialized using an options object that does not match the API schema.
+                        //     // 原因： 可能是该r版本的postcss-loade不支持在webpack.config.js文件中这么写
+                        //     // 解决办法：在项目根目录新建一个postcss.config.js文件 在里面写
+                        //     plugins: [
+                        //         require("autoprefixer")("last 100 versions")
+                        //     ]
+                        // }
+                    },
+                    'less-loader'
+                ]
             }
         ]
     },
