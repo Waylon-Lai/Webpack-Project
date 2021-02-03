@@ -1,6 +1,7 @@
 // webpack.config.js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
     // 模式配置
     mode: 'development',
@@ -15,7 +16,7 @@ module.exports = {
     // 出口文件
     output: {
         path: path.resolve(__dirname, '../dist'), // 输出地址
-        filename: 'js/[name].js' // 输出文件名
+        filename: 'js/[name].js' // 指列在 entry 中，打包后输出的文件的名称
     },
     // 处理对应模块
     module: {
@@ -38,7 +39,8 @@ module.exports = {
             {
                 test: /\.(le|c)ss$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
+                    // 'style-loader', //使用MiniCssExtractPlugin将css用link的方式引入就不再需要style-loader了
                     {
                         loader: 'css-loader',
                         options: {
@@ -86,6 +88,10 @@ module.exports = {
             styles: '<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.10.0/theme-chalk/index.css">' // html 模板内通过设置<%= htmlWebpackPlugin.options.styles %> 拿到的变量
             // inject: 'body',
             // scriptLoading: 'blocking'
+        }),
+        // 把css文件从默认js文件中拆分出来的插件
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].[contenthash:16].css',
         }),
     ],
     // 开发服务器配置
