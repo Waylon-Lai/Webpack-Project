@@ -16,7 +16,8 @@ module.exports = {
     // 出口文件
     output: {
         path: path.resolve(__dirname, '../dist'), // 输出地址
-        filename: 'js/[name].js' // 指列在 entry 中，打包后输出的文件的名称
+        filename: 'js/[name].[chunkhash].js', // 指列在 entry 中，打包后输出的文件的名称
+        chunkFilename: 'js/[id].[chunkhash].js' // 指未被列在 entry 中，却又需要被打包出来的 chunk 文件的名称。一般来说，这个 chunk 文件指的就是要懒加载的代码
     },
     // 处理对应模块
     module: {
@@ -92,6 +93,7 @@ module.exports = {
         // 把css文件从默认js文件中拆分出来的插件
         new MiniCssExtractPlugin({
             filename: 'css/[name].[contenthash:16].css',
+            chunkFilename: 'css/[id].[contenthash:16].css'
         }),
     ],
     // 开发服务器配置
