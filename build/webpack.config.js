@@ -81,7 +81,7 @@ module.exports = {
                             publicPath: '../', // 指定公共路径 最终路径为 publicPath + name 即 ../images/[name].[hash:7].[ext]
                             // 注意：这时候html中的图片路径受publicPath的影响，无法加载出来
                             // 解决办法：可以把HtmlWebpackPlugin中的filename设置成 html/home.html 加多一层文件夹
-                            esModule: false // 使用html-withimg-loader打包html中img引入的图片，很好用，但是webpack4.x及以上版本会和html-webpack-plugin产生冲突 解决方案：需要在file-loader（或者是内置了file-loader的其他loader，比如url-loader）的options里使用一个配置：esModule:false
+                            // esModule: false // 使用html-withimg-loader打包html中img引入的图片，很好用，但是webpack4.x及以上版本会和html-webpack-plugin产生冲突 解决方案：需要在file-loader（或者是内置了file-loader的其他loader，比如url-loader）的options里使用一个配置：esModule:false
                         }
                     },
                 ]
@@ -93,7 +93,7 @@ module.exports = {
                     limit: 10000,
                     publicPath: '../',
                     name: 'media/[name].[hash:7].[ext]',
-                    esModule: false
+                    // esModule: false
                 }
             },
             {
@@ -103,13 +103,15 @@ module.exports = {
                     limit: 10000,
                     publicPath: '../',
                     name: 'fonts/[name].[hash:7].[ext]',
-                    esModule: false
+                    // esModule: false
                 }
             },
-            {
-                test: /\.(htm|html)$/i,
-                loader: 'html-withimg-loader'
-            }
+            // 补充一个问题：html-withimg-loader和html-webpack-plugin还会产生这样的冲突：html模板里面设置的类似 <%= htmlWebpackPlugin.options.title %> 将会无效
+            // 因此不建议使用此插件
+            // {
+            //     test: /\.(htm|html)$/i,
+            //     loader: 'html-withimg-loader'
+            // }
         ]
     },
     // 对应插件
