@@ -2,6 +2,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+console.log(__dirname);
+
 module.exports = {
     // 模式配置
     mode: 'development',
@@ -70,13 +72,16 @@ module.exports = {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, // 解析图片
                 use: [
                     {
-                        //url-loader可以处理webpack加载css背景图片、img元素指向的网络图片、使用es6的import引入的图片 但不能处理在html的img标签中直接写入src属性的图片
+                        //url-loader可以处理webpack加载css背景图片、img元素指向的网络图片、使用es6的import引入的图片 但不能处理在html的img标签中直接写入src属性的图片(原因可能是因为在入口文件中没有引入该文件？？？)
                         loader: 'url-loader',
                         options: {
                             limit: 8192, // 小于8k的图片自动转成base64格式，并且不会存在实体图片；超过8k则使用file-loader加载图片，存在实体图片
                             // outputPath: 'images/' // 图片打包后存放的目录
                             name: 'images/[name].[hash:7].[ext]', // 指定图片打包后存放的目录以及文件名格式
                             publicPath: '../', // 指定公共路径 最终路径为 publicPath + name 即 ../images/[name].[hash:7].[ext]
+                            // 注意：这时候html中的图片路径受publicPath的影响，无法加载出来
+                            // 解决办法：可以把HtmlWebpackPlugin中的filename设置成 html/home.html 加多一层文件夹
+                            esModule: false // 使用html-withimg-loader打包html中img引入的图片，很好用，但是webpack4.x及以上版本会和html-webpack-plugin产生冲突 解决方案：需要在file-loader（或者是内置了file-loader的其他loader，比如url-loader）的options里使用一个配置：esModule:false
                         }
                     },
                 ]
@@ -87,7 +92,8 @@ module.exports = {
                 options: {
                     limit: 10000,
                     publicPath: '../',
-                    name: 'media/[name].[hash:7].[ext]'
+                    name: 'media/[name].[hash:7].[ext]',
+                    esModule: false
                 }
             },
             {
@@ -96,8 +102,13 @@ module.exports = {
                 options: {
                     limit: 10000,
                     publicPath: '../',
-                    name: 'fonts/[name].[hash:7].[ext]'
+                    name: 'fonts/[name].[hash:7].[ext]',
+                    esModule: false
                 }
+            },
+            {
+                test: /\.(htm|html)$/i,
+                loader: 'html-withimg-loader'
             }
         ]
     },
