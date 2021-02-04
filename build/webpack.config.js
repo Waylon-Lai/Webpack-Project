@@ -84,6 +84,13 @@ module.exports = {
                             // esModule: false // 使用html-withimg-loader打包html中img引入的图片，很好用，但是webpack4.x及以上版本会和html-webpack-plugin产生冲突 解决方案：需要在file-loader（或者是内置了file-loader的其他loader，比如url-loader）的options里使用一个配置：esModule:false
                         }
                     },
+                    {
+                        loader: 'image-webpack-loader', // 压缩图片
+                        options: {
+                            bypassOnDebug: true,
+                            pngquant: { quality: [0.3, 0.5], speed: 4 } // 针对png格式的图片进行特别处理
+                        }
+                    }
                 ]
             },
             {
