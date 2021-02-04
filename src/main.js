@@ -4,6 +4,8 @@
 import './assets/index.css';
 // 导入less文件
 import './assets/index.less';
+// 导入图片
+import './assets/lyf.jpg';
 // 这种方式导入会按照给定的chunkName进行模块化打包 并且执行里面的代码 属于异步加载
 import(/* webpackChunkName: "test-chunk-file-name-1" */'./testChunk/testChunkFileName1');
 

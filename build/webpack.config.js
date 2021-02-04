@@ -65,6 +65,39 @@ module.exports = {
                     },
                     'less-loader'
                 ]
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, // 解析图片
+                use: [
+                    {
+                        //url-loader可以处理webpack加载css背景图片、img元素指向的网络图片、使用es6的import引入的图片 但不能处理在html的img标签中直接写入src属性的图片
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192, // 小于8k的图片自动转成base64格式，并且不会存在实体图片；超过8k则使用file-loader加载图片，存在实体图片
+                            // outputPath: 'images/' // 图片打包后存放的目录
+                            name: 'images/[name].[hash:7].[ext]', // 指定图片打包后存放的目录以及文件名格式
+                            publicPath: '../', // 指定公共路径 最终路径为 publicPath + name 即 ../images/[name].[hash:7].[ext]
+                        }
+                    },
+                ]
+            },
+            {
+                test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/, // 解析音频视频
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    publicPath: '../',
+                    name: 'media/[name].[hash:7].[ext]'
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/, // 解析字体
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    publicPath: '../',
+                    name: 'fonts/[name].[hash:7].[ext]'
+                }
             }
         ]
     },
