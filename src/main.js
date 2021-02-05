@@ -28,3 +28,10 @@ document.getElementById('btnB').onclick = function () {
 };
   
 console.log('这是入口文件');
+
+const asyncFunc = async () => {
+    await setTimeout(() => {
+        console.log('测试babel对async和await的支持');
+    });
+};
+asyncFunc();
