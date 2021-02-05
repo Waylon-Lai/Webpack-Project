@@ -1,0 +1,13 @@
+{
+  "presets": [
+      [
+          "@babel/preset-env",
+          {
+              "targets": {
+                  "browsers": ["> 1%", "last 2 versions", "not ie <= 8"] // 这里 browsers 的配置，就是让 env 去识别要打包代码到什么程度，版本选的越新，打包出来的代码就越小。因为通常版本越低的浏览器，代码转译的量会更大
+              }
+          }
+      ]
+  ],
+  "plugins": ["@babel/plugin-transform-runtime"] // 避免重复引入一些运行期间重复的公共文件从而导致代码体积大冗余
+}

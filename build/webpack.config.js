@@ -119,6 +119,29 @@ module.exports = {
             //     test: /\.(htm|html)$/i,
             //     loader: 'html-withimg-loader'
             // }
+            {
+                test: /\.m?js$/,
+                include: /src/, // 只转化src目录下的js
+                exclude: /node_modules/, // 排除掉node_modules，优化打包速度
+                use: {
+                    loader: 'babel-loader', // 把ES6的或者更高级别的语法编译成ES5的语法，提高兼容性
+                    // 这里的配置也可以在项目根目录新建一个 .babelrc 文件 在里面写配置内容
+                    options: {
+                    //     presets: [
+                    //         [
+                    //             "@babel/preset-env",
+                    //             {
+                    //                 "targets": {
+                    //                     "browsers": ["> 1%", "last 2 versions", "not ie <= 8"] // 这里 browsers 的配置，就是让 env 去识别要打包代码到什么程度，版本选的越新，打包出来的代码就越小。因为通常版本越低的浏览器，代码转译的量会更大
+                    //                 }
+                    //             }
+                    //         ]
+                    //     ],
+                    //     plugins: ['@babel/plugin-transform-runtime'], // 避免重复引入一些运行期间重复的公共文件从而导致代码体积大冗余
+                        cacheDirectory: true // 当有设置时，指定的目录将用来缓存 loader 的执行结果。之后的 webpack 构建，将会尝试读取缓存，来避免在每次执行时，可能产生的、高性能消耗的 Babel 重新编译过程(注意：写在.babelrc 文件中会报错)
+                    }
+                }
+            },
         ]
     },
     // 对应插件
