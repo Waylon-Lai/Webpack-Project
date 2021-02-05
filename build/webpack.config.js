@@ -2,6 +2,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 console.log(__dirname);
 
 module.exports = {
@@ -171,6 +172,8 @@ module.exports = {
             filename: 'css/[name].[contenthash:16].css',
             chunkFilename: 'css/[id].[contenthash:16].css'
         }),
+        // 打包前先清空先前打包的内容
+        new CleanWebpackPlugin(),
     ],
     // 开发服务器配置
     devServer: {}
