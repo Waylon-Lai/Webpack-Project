@@ -153,7 +153,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: '手搭 Webpack 开发环境', // html 模板内通过设置<%= htmlWebpackPlugin.options.title %> 拿到的变量
             template: './src/index.html', // 使用的 html 模板地址
-            filename: 'home.html', // 输出文件名
+            filename: 'index.html', // 输出文件名 网站默认寻找路径是 index.html 最好采用这个名字
             minify: {
                 removeComments: true,
                 collapseWhitespace: true,
@@ -176,5 +176,11 @@ module.exports = {
         new CleanWebpackPlugin(),
     ],
     // 开发服务器配置
-    devServer: {}
+    devServer: {
+        contentBase: path.resolve(__dirname, '../dist'),
+        host: 'localhost',      // 默认是localhost
+        port: 3600,             // 端口
+        open: true,             // 自动打开浏览器
+        hot: true               // 开启热更新
+    }
 };
