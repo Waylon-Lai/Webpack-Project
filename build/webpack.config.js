@@ -3,7 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-console.log(__dirname);
+const webpack = require('webpack');
 
 module.exports = {
     // 模式配置
@@ -174,6 +174,8 @@ module.exports = {
         }),
         // 打包前先清空先前打包的内容
         new CleanWebpackPlugin(),
+        // 热更新插件，热更新是指在不刷新页面的情况下更新页面内容
+        new webpack.HotModuleReplacementPlugin()
     ],
     // 开发服务器配置
     devServer: {
@@ -181,6 +183,6 @@ module.exports = {
         host: 'localhost',      // 默认是localhost
         port: 3600,             // 端口
         open: true,             // 自动打开浏览器
-        hot: true               // 开启热更新
+        hot: true,              // 开启热更新
     }
 };

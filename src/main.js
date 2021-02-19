@@ -35,3 +35,12 @@ const asyncFunc = async () => {
     });
 };
 asyncFunc();
+// 此时还没完虽然配置了插件和开启了热更新，但实际上并不会生效
+let a = 'hello world123';
+console.log(a);
+
+// 还需要在主要的js文件里写入下面这段代码
+if (module.hot) {
+    // 实现热更新
+    module.hot.accept();
+}
