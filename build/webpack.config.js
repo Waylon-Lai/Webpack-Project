@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
-const isDev = process.env.NODE_ENV;
+const assetsPublicPath = '/';
 
 module.exports = env => {
     // 在package.json文件中通过命令行传入参数env："webpack --env.NODE_ENV=local --env.production --config ./build/webpack.config.js"
@@ -191,7 +191,17 @@ module.exports = env => {
             port: 3600,             // 端口
             open: true,             // 自动打开浏览器
             hot: true,              // 开启热更新
-            compress: true          //启用gzip压缩
+            compress: true,         //启用gzip压缩
+            clientLogLevel: 'silent', // 当使用 inline mode 时， DevTools 会输出信息，例如：重新加载之前，出错之前或 Hot Module Replacement 被开启时。可能会导致日志过于冗余，可以通过将其设置为 'silent' 来关闭日志
+            historyApiFallback: {
+                // 当使用 HTML5 History API 时, 所有的 404 请求都会响应回 rewrites 重定向的页面，避免出现404页面
+                // 并且，设置rewrites后可以不用再设置 前面的contentBase
+                rewrites: [
+                    // from 对应匹配规则的路径
+                    // to 重定向的页面 'index.html'与HtmlWebpackPlugin中的filename对应
+                    { from: /.*/, to: path.posix.join(assetsPublicPath, 'index.html') }
+                ]
+            },
         }
     };
 };
