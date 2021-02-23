@@ -27,6 +27,7 @@ module.exports = env => {
             path: path.resolve(__dirname, '../dist'), // 输出地址
             filename: 'js/[name].[chunkhash].js', // 指列在 entry 中，打包后输出的文件的名称
             chunkFilename: 'js/[id].[chunkhash].js', // 指未被列在 entry 中，却又需要被打包出来的 chunk 文件的名称。一般来说，这个 chunk 文件指的就是要懒加载的代码
+            publicPath: '/' // 利用html-webpack-plugin插件打包生成的index.html文件里面引用资源的前缀
         },
         // 处理对应模块
         module: {
@@ -209,6 +210,8 @@ module.exports = env => {
             },
             // stats: 'errors-only' // 用来控制编译的时候shell上的输出内容 "errors-only"表示只打印错误
             quiet: true, // 这个配置属性和devServer.stats属于同一类型的配置属性 当它被设置为true的时候，控制台只输出第一次编译的信息，当你保存后再次编译的时候不会输出任何内容，包括错误和警告
+            publicPath: '/', // 指定打包生成的静态文件所在的位置,用来本地服务拦截带publicPath开头的请求的（若是devServer里面的publicPath没有设置，则会认为是output里面设置的publicPath的值,如果output也没有设置，就取默认值 “/”） 一般情况下都要保证devServer中的publicPath与output.publicPath保持一致
+            // publicPath比较晦涩，可参考：https://www.cnblogs.com/SamWeb/p/8353367.html https://blog.csdn.net/wang839305939/article/details/85855967 https://www.jianshu.com/p/cbe81be10d78
             watchOptions: {
                 aggregateTimeout: 300, // 一旦第一个文件改变，在重建之前添加一个延迟。填以毫秒为单位的数字。
                 poll: 1000, // 观察许多文件系统会导致大量的CPU或内存使用量。可以排除一个巨大的文件夹。
