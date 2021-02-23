@@ -1,0 +1,32 @@
+{
+    "recurseDepth": 10,
+    "tags": {
+        "dictionaries": [
+            "jsdoc"
+        ],
+        "allowUnknownTags": true
+    },
+    "plugins": [
+        ".\/jsdoc-vue"
+    ],
+    "source": {
+        "include": [
+            ".\/src"
+        ],
+        "includePattern": ".+\\.(vue)$",
+        "excludePattern": "(^|\\\/|\\\\)_"
+    },
+    "templates": {
+        "useLongnameInNav": false,
+        "monospaceLinks": true,
+        "showInheritedInNav": true,
+        "cleverLinks": false
+    },
+    "opts": {
+        "destination": ".\/doc\/src",
+        "encoding": "utf8",
+        "private": true,
+        "recurse": true,
+        "template": ".\/node_modules\/minami"
+    }
+}
