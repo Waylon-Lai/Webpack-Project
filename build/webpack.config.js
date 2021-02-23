@@ -3,6 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const webpack = require('webpack');
 const assetsPublicPath = '/';
 
@@ -27,7 +28,7 @@ module.exports = env => {
             path: path.resolve(__dirname, '../dist'), // 输出地址
             filename: 'js/[name].[chunkhash].js', // 指列在 entry 中，打包后输出的文件的名称
             chunkFilename: 'js/[id].[chunkhash].js', // 指未被列在 entry 中，却又需要被打包出来的 chunk 文件的名称。一般来说，这个 chunk 文件指的就是要懒加载的代码
-            publicPath: '/' // 利用html-webpack-plugin插件打包生成的index.html文件里面引用资源的前缀
+            // publicPath: '/' // 利用html-webpack-plugin插件打包生成的index.html文件里面引用资源的前缀
         },
         // 处理对应模块
         module: {
@@ -50,8 +51,8 @@ module.exports = env => {
                 {
                     test: /\.(le|c)ss$/,
                     use: [
-                        MiniCssExtractPlugin.loader,
-                        // 'style-loader', // 使用MiniCssExtractPlugin将css用link的方式引入就不再需要style-loader了
+                        // MiniCssExtractPlugin.loader,
+                        'style-loader', // 使用MiniCssExtractPlugin将css用link的方式引入就不再需要style-loader了
                         // 并且，一般来说，我们在开发环境使用style-loader，生产环境使用MiniCssExtractPlugin
                         {
                             loader: 'css-loader',
@@ -151,6 +152,10 @@ module.exports = env => {
                         }
                     }
                 },
+                {
+                    test: /\.vue$/,
+                    loader: 'vue-loader'
+                }
             ]
         },
         // 对应插件
@@ -183,7 +188,8 @@ module.exports = env => {
             // 打包前先清空先前打包的内容
             new CleanWebpackPlugin(),
             // 热更新插件，热更新是指在不刷新页面的情况下更新页面内容
-            new webpack.HotModuleReplacementPlugin()
+            new webpack.HotModuleReplacementPlugin(),
+            new VueLoaderPlugin(),
         ],
         // 开发服务器配置
         devServer: {

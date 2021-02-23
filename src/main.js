@@ -8,6 +8,16 @@ import './assets/index.less';
 // 这种方式导入会按照给定的chunkName进行模块化打包 并且执行里面的代码 属于异步加载
 import(/* webpackChunkName: "test-chunk-file-name-1" */'./testChunk/testChunkFileName1');
 
+// -----------------------------------------------Vue--------------------------------------------------------
+import Vue from 'vue';
+import App from './App.vue';
+
+new Vue({
+    render: h => h(App)
+}).$mount('#app');
+// -----------------------------------------------Vue--------------------------------------------------------
+
+
 document.getElementById('btnA').onclick = function () {
     //异步加载A
     // import(/* webpackChunkName: "test-chunk-file-name-4" */'./testChunk/testChunkFileName4').then((data) => {
@@ -40,7 +50,7 @@ let a = 'hello world123';
 console.log(a);
 
 // 还需要在主要的js文件里写入下面这段代码
-if (module.hot) {
-    // 实现热更新
-    module.hot.accept();
-}
+// if (module.hot) {
+//     // 实现热更新
+//     module.hot.accept();
+// }
