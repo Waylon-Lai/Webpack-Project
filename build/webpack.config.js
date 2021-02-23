@@ -19,14 +19,14 @@ module.exports = env => {
         // 入口文件
         entry: {
             // 通过对象的方式可以构建多个入口
-            main: './src/main.js',
+            app: './src/main.js',
             // index: './src/index.js'
         },
         // 出口文件
         output: {
             path: path.resolve(__dirname, '../dist'), // 输出地址
             filename: 'js/[name].[chunkhash].js', // 指列在 entry 中，打包后输出的文件的名称
-            chunkFilename: 'js/[id].[chunkhash].js' // 指未被列在 entry 中，却又需要被打包出来的 chunk 文件的名称。一般来说，这个 chunk 文件指的就是要懒加载的代码
+            chunkFilename: 'js/[id].[chunkhash].js', // 指未被列在 entry 中，却又需要被打包出来的 chunk 文件的名称。一般来说，这个 chunk 文件指的就是要懒加载的代码
         },
         // 处理对应模块
         module: {
@@ -186,8 +186,8 @@ module.exports = env => {
         ],
         // 开发服务器配置
         devServer: {
-            contentBase: path.resolve(__dirname, '../dist'),
-            host: 'localhost',      // 默认是localhost
+            // contentBase: path.resolve(__dirname, '../dist'), // 用来指定被访问html页面所在目录 如不配置，devServer默认html所在的目录就是项目的根目录
+            host: '0.0.0.0',        // 默认是localhost 设置成0.0.0.0 既可以通过localhost访问，也可以通过本机IP访问
             port: 3600,             // 端口
             open: true,             // 自动打开浏览器
             hot: true,              // 开启热更新
@@ -202,6 +202,31 @@ module.exports = env => {
                     { from: /.*/, to: path.posix.join(assetsPublicPath, 'index.html') }
                 ]
             },
+            overlay: {
+                // 用来在编译出错的时候，在浏览器页面上显示错误和警告
+                warnings: true, // 显示错误
+                errors: true, // 显示警告
+            },
+            // stats: 'errors-only' // 用来控制编译的时候shell上的输出内容 "errors-only"表示只打印错误
+            quiet: true, // 这个配置属性和devServer.stats属于同一类型的配置属性 当它被设置为true的时候，控制台只输出第一次编译的信息，当你保存后再次编译的时候不会输出任何内容，包括错误和警告
+            watchOptions: {
+                aggregateTimeout: 300, // 一旦第一个文件改变，在重建之前添加一个延迟。填以毫秒为单位的数字。
+                poll: 1000, // 观察许多文件系统会导致大量的CPU或内存使用量。可以排除一个巨大的文件夹。
+                ignored: /node_modules/ // 填以毫秒为单位的数字。每隔（你设定的）多少时间查一下有没有文件改动过。不想启用也可以填false。
+            },
+            proxy: {
+                '/proxy': {
+                    target: 'http://your_api_server.com',
+                    changeOrigin: true,
+                    pathRewrite: {
+                        '^/proxy': ''
+                    }
+                }
+                // 假设你主机名为 localhost:8080 , 请求 API 的 url 是 http：//your_api_server.com/user/list
+                // '/proxy'：如果点击某个按钮，触发请求 API 事件，这时请求 url 是http：//localhost:8080/proxy/user/list 。
+                // changeOrigin：如果 true ，那么 http：//localhost:8080/proxy/user/list 变为 http：your_api_server.com/proxy/user/list 。但还不是我们要的 url 。
+                // pathRewrite：重写路径。匹配 /proxy ，然后变为'' ，那么 url 最终为 http：//your_api_server.com/user/list 。
+            }
         }
     };
 };
