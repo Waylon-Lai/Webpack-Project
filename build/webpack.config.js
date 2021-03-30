@@ -33,6 +33,33 @@ module.exports = env => {
         // 处理对应模块
         module: {
             rules: [
+                {
+                    test: /\.vue$/,
+                    loader: 'vue-loader'
+                },
+                {
+                    test: /\.m?js$/,
+                    include: /src/, // 只转化src目录下的js
+                    exclude: /node_modules/, // 排除掉node_modules，优化打包速度
+                    use: {
+                        loader: 'babel-loader', // 把ES6的或者更高级别的语法编译成ES5的语法，提高兼容性
+                        // 这里的配置也可以在项目根目录新建一个 .babelrc 文件 在里面写配置内容
+                        options: {
+                        //     presets: [
+                        //         [
+                        //             "@babel/preset-env",
+                        //             {
+                        //                 "targets": {
+                        //                     "browsers": ["> 1%", "last 2 versions", "not ie <= 8"] // 这里 browsers 的配置，就是让 env 去识别要打包代码到什么程度，版本选的越新，打包出来的代码就越小。因为通常版本越低的浏览器，代码转译的量会更大
+                        //                 }
+                        //             }
+                        //         ]
+                        //     ],
+                        //     plugins: ['@babel/plugin-transform-runtime'], // 避免重复引入一些运行期间重复的公共文件从而导致代码体积大冗余
+                            cacheDirectory: true // 当有设置时，指定的目录将用来缓存 loader 的执行结果。之后的 webpack 构建，将会尝试读取缓存，来避免在每次执行时，可能产生的、高性能消耗的 Babel 重新编译过程(注意：写在.babelrc 文件中会报错)
+                        }
+                    }
+                },
                 // {
                 //     test: /\.css$/, // 解析css
                 //     use: ['style-loader', 'css-loader'] // 从右向左解析
@@ -129,33 +156,6 @@ module.exports = env => {
                 //     test: /\.(htm|html)$/i,
                 //     loader: 'html-withimg-loader'
                 // }
-                {
-                    test: /\.m?js$/,
-                    include: /src/, // 只转化src目录下的js
-                    exclude: /node_modules/, // 排除掉node_modules，优化打包速度
-                    use: {
-                        loader: 'babel-loader', // 把ES6的或者更高级别的语法编译成ES5的语法，提高兼容性
-                        // 这里的配置也可以在项目根目录新建一个 .babelrc 文件 在里面写配置内容
-                        options: {
-                        //     presets: [
-                        //         [
-                        //             "@babel/preset-env",
-                        //             {
-                        //                 "targets": {
-                        //                     "browsers": ["> 1%", "last 2 versions", "not ie <= 8"] // 这里 browsers 的配置，就是让 env 去识别要打包代码到什么程度，版本选的越新，打包出来的代码就越小。因为通常版本越低的浏览器，代码转译的量会更大
-                        //                 }
-                        //             }
-                        //         ]
-                        //     ],
-                        //     plugins: ['@babel/plugin-transform-runtime'], // 避免重复引入一些运行期间重复的公共文件从而导致代码体积大冗余
-                            cacheDirectory: true // 当有设置时，指定的目录将用来缓存 loader 的执行结果。之后的 webpack 构建，将会尝试读取缓存，来避免在每次执行时，可能产生的、高性能消耗的 Babel 重新编译过程(注意：写在.babelrc 文件中会报错)
-                        }
-                    }
-                },
-                {
-                    test: /\.vue$/,
-                    loader: 'vue-loader'
-                }
             ]
         },
         // 对应插件
@@ -174,7 +174,7 @@ module.exports = env => {
                         // more options:
                         // https://github.com/kangax/html-minifier#options-quick-reference
                 },
-                chunksSortMode: 'none',
+                chunksSortMode: 'none', //若打包时间过久，可能跟此项有关，可以尝试从'dependency'改为'none'
                 scripts: `<script src="https://cdn.bootcss.com/echarts/4.1.0/echarts.min.js"></script>`, // html 模板内通过设置<%= htmlWebpackPlugin.options.scripts %> 拿到的变量
                 styles: '<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.10.0/theme-chalk/index.css">' // html 模板内通过设置<%= htmlWebpackPlugin.options.styles %> 拿到的变量
                 // inject: 'body',
@@ -189,10 +189,13 @@ module.exports = env => {
             new CleanWebpackPlugin(),
             // 热更新插件，热更新是指在不刷新页面的情况下更新页面内容
             new webpack.HotModuleReplacementPlugin(),
+            // 添加 VueLoaderPlugin 插件
+            // VueLoaderPlugin 的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。例如，如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块
             new VueLoaderPlugin(),
         ],
         // 开发服务器配置
         devServer: {
+            // webpack-dev-server 默认会将构建结果和输出文件全部作为开发服务器的资源文件，也就是说，只要通过 Webpack 打包能够输出的文件都可以直接被访问到。但是如果你还有一些没有参与打包的静态文件也需要作为开发服务器的资源被访问，那你就需要额外通过配置contentBase“告诉” webpack-dev-server。
             // contentBase: path.resolve(__dirname, '../dist'), // 用来指定被访问html页面所在目录 如不配置，devServer默认html所在的目录就是项目的根目录
             host: '0.0.0.0',        // 默认是localhost 设置成0.0.0.0 既可以通过localhost访问，也可以通过本机IP访问
             port: 3600,             // 端口
@@ -214,7 +217,7 @@ module.exports = env => {
                 warnings: true, // 显示错误
                 errors: true, // 显示警告
             },
-            // stats: 'errors-only' // 用来控制编译的时候shell上的输出内容 "errors-only"表示只打印错误
+            // stats: 'errors-only', // 用来控制编译的时候shell上的输出内容 "errors-only"表示只打印错误
             quiet: true, // 这个配置属性和devServer.stats属于同一类型的配置属性 当它被设置为true的时候，控制台只输出第一次编译的信息，当你保存后再次编译的时候不会输出任何内容，包括错误和警告
             publicPath: '/', // 指定打包生成的静态文件所在的位置,用来本地服务拦截带publicPath开头的请求的（若是devServer里面的publicPath没有设置，则会认为是output里面设置的publicPath的值,如果output也没有设置，就取默认值 “/”） 一般情况下都要保证devServer中的publicPath与output.publicPath保持一致
             // publicPath比较晦涩，可参考：https://www.cnblogs.com/SamWeb/p/8353367.html https://blog.csdn.net/wang839305939/article/details/85855967 https://www.jianshu.com/p/cbe81be10d78
